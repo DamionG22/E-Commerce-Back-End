@@ -21,6 +21,7 @@ router.get('/:id', async (req, res) => {
     
       include: [{ model: Product, through: ProductTag, as: 'Product_ProductTag' }]
 });
+// if provided ID has no match
 if (!locationData) {
   res.status(404).json({ message: 'No Products found with this Tag!' });
   return;
@@ -52,27 +53,7 @@ router.post('/', async (req, res) => {
   }
 });
 
-//   Product.create(req.body)
-//     .then((product) => {
-//       // if there's product tags, we need to create pairings to bulk create in the ProductTag model
-//       if (req.body.tagIds.length) {
-//         const productTagIdArr = req.body.tagIds.map((tag_id) => {
-//           return {
-//             product_id: product.id,
-//             tag_id,
-//           };
-//         });
-//         return ProductTag.bulkCreate(productTagIdArr);
-//       }
-//       // if no product tags, just respond
-//       res.status(200).json(product);
-//     })
-//     .then((productTagIds) => res.status(200).json(productTagIds))
-//     .catch((err) => {
-//       console.log(err);
-//       res.status(400).json(err);
-//     });
-// });
+
 
 // update product
 router.put('/:id', (req, res) => {
@@ -118,7 +99,7 @@ router.put('/:id', (req, res) => {
       res.status(400).json(err);
     });
 });
-
+// Deletes product by ID
 router.delete('/:id', async (req, res) => {
   try {
     const productData = await Product.destroy({
@@ -126,7 +107,7 @@ router.delete('/:id', async (req, res) => {
         id: req.params.id
       }
     });
-
+// If no ID match is found
     if (!productData) {
       res.status(404).json({ message: 'No Product found with this Tag!' });
       return;
