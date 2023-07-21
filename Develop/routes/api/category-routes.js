@@ -38,9 +38,26 @@ router.post('/', async (req, res) => {
     res.status(400).json(err);
   }
 });
+// Updates Category
+router.put('/:id', async (req, res) => {
+  const categoryId = req.params.id;
+  const { newProduct } = req.body;
 
-router.put('/:id', (req, res) => {
-  // update a category by its `id` value
+  try {
+    
+    const updatedCategory = await Category.findByIdAndUpdate(categoryId, { Product: newProduct }, { new: true });
+
+    if (!updatedCategory) {
+      // No match found with ID
+      return res.status(404).json({ error: 'Category not found' });
+    }
+
+    return res.json(updatedCategory);
+  } catch (error) {
+   
+    console.error(error);
+    return res.status(500).json({ error: 'Internal Server Error' });
+  }
 });
 // Deletes category by ID
 router.delete('/:id', async (req, res) => {

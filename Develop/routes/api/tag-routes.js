@@ -38,10 +38,28 @@ router.post('/', async (req, res) => {
     res.status(400).json(err);
   }
 });
+// updates existing tag
+router.put('/:id', async (req, res) => {
+  const tagId = req.params.id;
+  const { newName } = req.body;
 
-router.put('/:id', (req, res) => {
-  // update a tag's name by its `id` value
+  try {
+    
+    const updatedTag = await Tag.findByIdAndUpdate(tagId, { name: newName }, { new: true });
+
+    if (!updatedTag) {
+      // No match found with ID
+      return res.status(404).json({ error: 'Tag not found' });
+    }
+
+    return res.json(updatedTag);
+  } catch (error) {
+   
+    console.error(error);
+    return res.status(500).json({ error: 'Internal Server Error' });
+  }
 });
+
 // deletes tag by ID
 router.delete('/:id', async (req, res) => {
   try {
